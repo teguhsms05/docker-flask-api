@@ -65,7 +65,6 @@ def hello_world():
     return statement
 
 class Players(Resource):
-    @token_required
     def get(self):
         query = db.session.query(Account).all()
         players = [

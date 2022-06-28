@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  web:
+    container_name: docker-flask-api
+    image: docker-flask-api
+    build: .
+    command: gunicorn main:app --bind 0.0.0.0:5000
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"
+

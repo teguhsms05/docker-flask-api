@@ -65,6 +65,7 @@ def hello_world():
     return statement
 
 class Players(Resource):
+    @token_required
     def get(self):
         query = db.session.query(Account).all()
         players = [
@@ -170,11 +171,21 @@ class LoginPlayer(Resource):
             403,
             {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}
         )
+
+class CheckRefcode(Resource):
+    @token_required
+    def post(self):
+        body        = request.get_json()
+        ref_code    = body['referral_code']
+        
+        if db.session.query(Account).filter(Account.ref_code==ref_code).first():
+            return 'ok'
         
 # inisialisasi url / api 
 # testing
-api.add_resource(Players, "/api", methods=["GET", "POST"])
-api.add_resource(LoginPlayer, "/api/login", methods=["POST"])
+api.add_resource(Players, "/player", methods=["GET", "POST"])
+api.add_resource(LoginPlayer, "/player/login", methods=["POST"])
+api.add_resource(LoginPlayer, "/player/checkRefCode", methods=["POST"])
 
 #Calls the run method, runs the app on port 5005
 if __name__ == "__main__":

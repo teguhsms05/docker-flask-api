@@ -7,7 +7,7 @@ from functools import wraps
 #flask library
 from flask import Flask, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
-from flask_caching import Cache
+#from flask_caching import Cache
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Resource, Api
 from decouple import config
@@ -24,7 +24,7 @@ app.config['SECRET_KEY'] = config('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-cache = Cache(app)
+#cache = Cache(app)
 
 # inisiasi class models
 from models import *
@@ -174,7 +174,7 @@ class LoginPlayer(Resource):
 
 class CheckRefcode(Resource):
     @token_required
-    def post(self):
+    def post(self, current_user):
         body        = request.get_json()
         ref_code    = body['referral_code']
         
@@ -185,7 +185,7 @@ class CheckRefcode(Resource):
 # testing
 api.add_resource(Players, "/player", methods=["GET", "POST"])
 api.add_resource(LoginPlayer, "/player/login", methods=["POST"])
-api.add_resource(LoginPlayer, "/player/checkRefCode", methods=["POST"])
+api.add_resource(CheckRefcode, "/player/checkRefCode", methods=["POST"])
 
 #Calls the run method, runs the app on port 5005
 if __name__ == "__main__":

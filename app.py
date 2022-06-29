@@ -13,6 +13,7 @@ from flask_restful import Resource, Api
 from decouple import config
 #Import the flask module
 
+DATABASE_URL=os.environ.get('DATABASE_URL')
 
 app = Flask(__name__)
 
@@ -21,7 +22,8 @@ api = Api(app)
 
 app.config['SECRET_KEY'] = config('SECRET_KEY')
 #app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:postgres@db-container-bmg:5432/pg_backend'
-app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+#app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #cache = Cache(app)

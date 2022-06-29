@@ -179,11 +179,32 @@ class CheckRefcode(Resource):
         if db.session.query(Account).filter(Account.ref_code==ref_code).first():
             return 'ok'
         
+class UpdatePlayer(Resource):
+    @token_required
+    def put(self, current_user, player_id):
+        body        = request.get_json()
+        uname       = body['username']
+        passwd      = body['password']
+        name        = body['name']
+        mail        = body['email']
+        
+        #hashed password account
+        hashed_password = generate_password_hash(passwd, method='sha256')
+        
+        if(re.fullmatch(regex_mail, mail)):
+            db.session.query(Account).filter(Account.id==player_id, Account.public_id==current_user.public_id).update(
+                dict(uname=uname, passwd=hashed_password, name=name, mail=mail))
+            db.session.commit()
+            return 'updated data'
+        else:
+            return "invalid field information"
+        
 # inisialisasi url / api 
 # testing
 api.add_resource(Players, "/player", methods=["GET", "POST"])
 api.add_resource(LoginPlayer, "/player/login", methods=["POST"])
 api.add_resource(CheckRefcode, "/player/checkRefCode", methods=["POST"])
+api.add_resource(UpdatePlayer, "/player/update/<player_id>", methods=["PUT"])
 
 #Calls the run method, runs the app on port 5005
 if __name__ == "__main__":
